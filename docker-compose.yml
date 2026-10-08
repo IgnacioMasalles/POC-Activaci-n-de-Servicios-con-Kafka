@@ -1,0 +1,75 @@
+activation-api:
+    build: 
+      context: ./apps/activation-api
+    container_name: activation-api
+    ports:
+      - "3000:3000"
+    environment:
+      MONGO_URI: 'mongodb://mongo:27017/activations-db'
+      KAFKA_BROKERS: 'kafka:9092'
+      KAFKA_CLIENT_ID: 'activation-api'
+      KAFKA_GROUP_ID: 'activation-group'
+    depends_on:
+      - kafka
+      - mongo
+
+  billing-service:
+    build: 
+      context: ./apps/billing-service
+    container_name: billing-service
+    environment:
+      MONGO_URI: 'mongodb://mongo:27017/billing-db'
+      KAFKA_BROKERS: 'kafka:9092'
+      KAFKA_CLIENT_ID: 'billing-svc'
+      KAFKA_GROUP_ID: 'billing-group'
+    depends_on:
+      - kafka
+      - mongo
+
+  provisioning-service:
+    build: 
+      context: ./apps/provisioning-service
+    container_name: provisioning-service
+    environment:
+      MONGO_URI: 'mongodb://mongo:27017/provisioning-db'
+      KAFKA_BROKERS: 'kafka:9092'
+      KAFKA_CLIENT_ID: 'provisioning-svc'
+      KAFKA_GROUP_ID: 'provisioning-group'
+    depends_on:
+      - kafka
+      - mongo
+
+  notification-service:
+    build: 
+      context: ./apps/notification-service
+    container_name: notification-service
+    environment:
+      MONGO_URI: 'mongodb://mongo:27017/notification-db'
+      KAFKA_BROKERS: 'kafka:9092'
+      KAFKA_CLIENT_ID: 'notification-svc'
+      KAFKA_GROUP_ID: 'notification-group'
+    depends_on:
+      - kafka
+      - mongo
+
+  crm-analytics-service:
+    build: 
+      context: ./apps/crm-analytics-service
+    container_name: crm-analytics-service
+    environment:
+      MONGO_URI: 'mongodb://mongo:27017/crm-db'
+      KAFKA_BROKERS: 'kafka:9092'
+      KAFKA_CLIENT_ID: 'crm-svc'
+      KAFKA_GROUP_ID: 'crm-group'
+    depends_on:
+      - kafka
+      - mongo
+
+  demo-ui:
+    build: 
+      context: ./apps/demo-ui
+    container_name: demo-ui
+    ports:
+      - "5173:5173"
+    depends_on:
+      - activation-api
